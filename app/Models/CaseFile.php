@@ -16,6 +16,8 @@ class CaseFile extends Model
         'email',
         'phone',
         'case_brief',
+        'judge',
+        'recurring',
         'case_hearing_date',
         'lawyer_id'
     ];

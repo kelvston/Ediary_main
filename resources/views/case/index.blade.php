@@ -124,10 +124,28 @@
                             <label for="case_brief" class="form-label"><i class="fas fa-file-alt"></i> Case Brief</label>
                             <textarea id="case_brief" name="case_brief" class="form-control" rows="3" required  placeholder="Hearing, mention, necessary orders, etc."></textarea>
                         </div>
+                        <div class="mb-3">
+                            <label for="judge" class="form-label"><i class="fas fa-file-alt"></i> Judge</label>
+                            <textarea id="judge" name="judge" class="form-control" rows="3" required  placeholder="Responsible judge."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="case_hearing_date" class="form-label">
+                                <i class="fas fa-calendar-alt"></i> Schedule
+                            </label>
+                            <input type="datetime-local" id="case_hearing_date" name="case_hearing_date" class="form-control" required>
+                        </div>
 
                         <div class="mb-3">
-                            <label for="case_hearing_date" class="form-label"><i class="fas fa-calendar-alt"></i> Schedule</label>
-                            <input type="date" id="case_hearing_date" name="case_hearing_date" class="form-control" required>
+                            <label class="form-label">Recuring</label>
+                            <select name="recurring" class="form-select">
+                                <option value="none">None</option>
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                            </select>
+                            <small class="text-muted" id="recurringNote">
+                                Remind me "option above".
+                            </small>
                         </div>
 
                         <button type="submit" class="btn btn-custom w-100"><i class="fas fa-save"></i> Save Case</button>
@@ -154,6 +172,7 @@
                                 <th>Case Title</th>
                                 <th>Client</th>
                                 <th>Schedule</th>
+                                <th>Notification</th>
                                 <th>Action</th>
                             </tr>
                             </thead>
@@ -165,13 +184,32 @@
                                     <td>{{ $case->client_name }}</td>
                                     <td>{{ $case->case_hearing_date }}</td>
                                     <td>
-                                        <a href="#" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></a>
-                                        <a href="#" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
-                                        <form action="#" method="POST" style="display:inline;">
+                                        @if (!$case->notification)
+                                            <form action="{{ route('cases.notify', $case->id) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="btn btn-success">Notify</button>
+                                            </form>
+                                        @else
+                                            <span class="text-success">Notified</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('case.show', $case->id) }}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+
+                                        <a href="{{ route('case.edit', $case->id) }}" class="btn btn-sm btn-warning">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+
+                                        <form action="{{ route('case.destroy', $case->id) }}" method="POST" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
                                         </form>
+
                                     </td>
                                 </tr>
                             @endforeach
